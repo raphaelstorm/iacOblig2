@@ -1,10 +1,9 @@
-name: Test in staging environment
+name: Stage and test
 
 on:
-  workflow_run:
-    workflows: ["Deploy staging environment"]
-    types:
-        - completed
+  pull_request:
+    branches:
+      - 'main'
   workflow_dispatch:
 
 env:
@@ -15,7 +14,30 @@ env:
   WORKING_DIR: ./infrastructure
 
 jobs:
-    test-infrastructure:
+    deploy_stage:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+        
+        - name: Terraform init
+          run: terraform init
+          working-directory: ${{ env.WORKING_DIR }}
+          
+        - name: Terraform workspace select or create stage
+          run: terraform workspace select stage || terraform workspace new stage
+          working-directory: ${{ env.WORKING_DIR }}
+        
+        - name: Terraform apply stage
+          run: terraform apply -auto-approve
+          working-directory: ${{ env.WORKING_DIR }}
+
+        - name: Get Web Endpoint
+          id: get_web_endpoint
+          run: echo "STAGE_WEB_ENDPOINT=$(terraform output -raw primary_web_endpoint)" 
+          working-directory: ${{ env.WORKING_DIR }}
+    test_infrastructure:
+      needs: deploy_stage
       runs-on: ubuntu-latest
   
       steps:
@@ -24,13 +46,13 @@ jobs:
   
         - name: Setup Terraform
           uses: hashicorp/setup-terraform@v1
+
+        - name: Initialize Terraform
+          run: terraform init
+          working-directory: ${{ env.WORKING_DIR }}
   
         - name: Terraform workspace select or create stage
           run: terraform workspace select stage || terraform workspace new stage
-          working-directory: ${{ env.WORKING_DIR }}
-  
-        - name: Initialize Terraform
-          run: terraform init
           working-directory: ${{ env.WORKING_DIR }}
   
         - name: Validate Terraform Configuration
