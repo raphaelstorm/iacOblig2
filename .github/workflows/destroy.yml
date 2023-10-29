@@ -11,7 +11,7 @@ env:
   WORKING_DIR: ./cinfrastructure
 
 jobs:
-  destroy:
+  destroy_dev:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,6 +21,46 @@ jobs:
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
     
+      - name: Terraform workspace select or create dev
+        run: terraform workspace select dev || terraform workspace new dev
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Destroy
+        run: terraform destroy -auto-approve
+        working-directory: ${{ env.WORKING_DIR }}
+
+  destroy_stage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Init
+        run: terraform init
+        working-directory: ${{ env.WORKING_DIR }}
+    
+      - name: Terraform workspace select or create stage
+        run: terraform workspace select stage || terraform workspace new stage
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Destroy
+        run: terraform destroy -auto-approve
+        working-directory: ${{ env.WORKING_DIR }}
+  
+  destroy_prod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Init
+        run: terraform init
+        working-directory: ${{ env.WORKING_DIR }}
+    
+      - name: Terraform workspace select or create prod
+        run: terraform workspace select prod || terraform workspace new prod
+        working-directory: ${{ env.WORKING_DIR }}
+
       - name: Destroy
         run: terraform destroy -auto-approve
         working-directory: ${{ env.WORKING_DIR }}
