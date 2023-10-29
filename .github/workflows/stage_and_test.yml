@@ -11,7 +11,7 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  WORKING_DIR: /infrastructure
+  WORKING_DIR: ./infrastructure
 
 jobs:
     deploy_stage:
@@ -55,11 +55,12 @@ jobs:
           run: terraform workspace select stage || terraform workspace new stage
           working-directory: ${{ env.WORKING_DIR }}
   
-        - name: Validate Terraform Configuration
-          run: |
-            cd ${{ env.WORKING_DIR }}
-            terraform validate
-            tflint
+        - name: Run Validate
+          run: terraform validate
+          working-directory: ${{ env.WORKING_DIR }}
+
+        - name: Run tflint
+          run: tflint
           working-directory: ${{ env.WORKING_DIR }}
   
         - name: Run tfsec
