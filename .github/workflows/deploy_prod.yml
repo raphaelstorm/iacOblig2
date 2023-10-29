@@ -14,7 +14,7 @@ env:
   WORKING_DIR: ./infrastructure
 
 jobs:
-  deploy:
+  deploy_prod:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
