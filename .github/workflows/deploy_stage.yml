@@ -1,4 +1,4 @@
-name: stage_and_test
+name: Deploy staging environment
 
 on:
   pull_request:
@@ -36,24 +36,3 @@ jobs:
         id: get_web_endpoint
         run: echo "STAGE_WEB_ENDPOINT=$(terraform output -raw primary_web_endpoint)" 
         working-directory: ${{ env.WORKING_DIR }}
-  
-  validation_test:
-        needs: deploy_stage
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v3
-          
-          - name: Terraform init
-            run: terraform init
-            working-directory: ${{ env.WORKING_DIR }}
-            
-          - name: Terraform workspace select or create stage
-            run: terraform workspace select stage || terraform workspace new stage
-            working-directory: ${{ env.WORKING_DIR }}
-
-          - name: Validate
-            run: terraform validate
-            working-directory: ${{ env.WORKING_DIR }}
-  #security_test:
-  #endpoint_test:

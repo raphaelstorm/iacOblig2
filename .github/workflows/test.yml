@@ -1,0 +1,54 @@
+name: Test in staging environment
+
+on:
+  pull_request:
+    branches:
+        - 'main'
+  workflow_run:
+    workflows: ["Deploy staging environment"]
+    types:
+        - completed
+  workflow_dispatch:
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  WORKING_DIR: ./infrastructure
+
+jobs:
+    test-infrastructure:
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Check out code
+          uses: actions/checkout@v2
+  
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v1
+  
+        - name: Terraform workspace select or create stage
+          run: terraform workspace select stage || terraform workspace new stage
+          working-directory: ${{ env.WORKING_DIR }}
+  
+        - name: Initialize Terraform
+          run: terraform init
+          working-directory: ${{ env.WORKING_DIR }}
+  
+        - name: Validate Terraform Configuration
+          run: |
+            cd ${{ env.WORKING_DIR }}
+            terraform validate
+            tflint
+          working-directory: ${{ env.WORKING_DIR }}
+  
+        - name: Run tfsec
+          run: tfsec ${{ env.WORKING_DIR }}
+  
+        - name: Run Checkov
+          run: checkov -d ${{ env.WORKING_DIR }}
+  
+        - name: Run Terrascan
+          run: terrascan -t aws -p ${{ env.WORKING_DIR }}
+  
