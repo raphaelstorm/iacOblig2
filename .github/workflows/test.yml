@@ -1,9 +1,6 @@
 name: Test in staging environment
 
 on:
-  pull_request:
-    branches:
-        - 'main'
   workflow_run:
     workflows: ["Deploy staging environment"]
     types:
