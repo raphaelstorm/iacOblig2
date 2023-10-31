@@ -20,7 +20,6 @@ jobs:
     steps:
       - name: Authorize github
         run: git remote set-url origin "https://${{ env.GIT_TOKEN }}@github.com/raphaelstorm/iacOblig2.git"
-        working-directory: ${{ env.WORKING_DIR }}
 
       - name: Check out code
         uses: actions/checkout@v2
