@@ -1,0 +1,56 @@
+name: Validate dev
+
+on:
+  pull_request:
+    branches: 
+        - 'dev'
+  workflow_dispatch:
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  WORKING_DIR: ./infrastructure
+
+jobs:
+  test_infrastructure:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Terraform workspace select or create stage
+        run: terraform workspace select stage || terraform workspace new stage
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Validate
+        run: terraform validate
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          working_directory: ${{ env.WORKING_DIR }}
+
+      - name: Tflint
+        uses: terraform-linters/setup-tflint@v4.0.0
+        with:
+          tflint_version: default
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tflint_wrapper: false
+
+      - name: Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          output_format: cli
+          directory: ${{ env.WORKING_DIR }}

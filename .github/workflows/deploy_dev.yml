@@ -1,9 +1,7 @@
-name: deploy_dev
+name: Deploy dev
 
 on:
   push:
-    paths:
-        - 'infrastructure/**'
     branches: 
         - 'dev'
   workflow_dispatch:
@@ -16,13 +14,16 @@ env:
   WORKING_DIR: ./infrastructure
 
 jobs:
-  deploy:
+  deploy_dev:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      
-      - name: Terraform init
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Initialize Terraform
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
         
