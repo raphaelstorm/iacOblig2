@@ -11,7 +11,6 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  TOKEN: ${{ secrets.ACCESSTOKEN }}
   WORKING_DIR: ./infrastructure
 
 jobs:
@@ -20,9 +19,7 @@ jobs:
     steps:
       - name: Sign into git
         run: |
-          cat $GITHUB_WORKSPACE
           cd $GITHUB_WORKSPACE
-          ls -la
           git config --global user.email "raphaesl@stud.ntnu.no"
           git config --global user.name "Raphael Token"
           git config --global credential.helper store
@@ -43,14 +40,18 @@ jobs:
         working-directory: ${{ env.WORKING_DIR }}
       
       - name: Format Terraform Code
-        run: |
-          terraform fmt -recursive
-          git diff --exit-code || git commit -am "Format Terraform code" || true
+        run: terraform fmt -recursive
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: push
-        run: git push
-        working-directory: ${{ env.WORKING_DIR }}
+      - name: Commit fmt changes
+        uses: devops-infra/action-commit-push@master
+        with:
+          github_token: "${{ secrets.TOKEN }}"
+          add_timestamp: false
+          commit_prefix: "[AUTO]"
+          commit_message: "Format Terraform code"
+          force: false
+          target_branch: dev
 
   deploy_dev:
     needs: format
