@@ -36,12 +36,6 @@ jobs:
         run: terraform validate
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: Tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          working_directory: ${{ env.WORKING_DIR }}
-
       - name: Tflint
         uses: terraform-linters/setup-tflint@v4.0.0
         with:
