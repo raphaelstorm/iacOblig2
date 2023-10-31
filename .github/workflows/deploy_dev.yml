@@ -18,18 +18,14 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-
-      - name: Init git
-        run: git init
-        working-directory: ""
-
       - name: Sign into git
         run: |
+          cd $GITHUB_WORKSPACE
           git config --global user.email "raphaesl@stud.ntnu.no"
           git config --global user.name "Raphael Token"
           git config --global credential.helper store
           git remote set-url origin "https://${TOKEN}@github.com/yourusername/yourrepository.git"
-        working-directory: ""
+        
       - name: Check out code
         uses: actions/checkout@v2
 
