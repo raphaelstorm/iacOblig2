@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authorize github
-        run: git remote set-url origin "https://${{ env.GIT_TOKEN }}@github.com/raphaelstorm/iacOblig2.git"
+        run: git remote set-url origin "https://${env.GIT_TOKEN}@github.com/raphaelstorm/iacOblig2.git"
 
       - name: Check out code
         uses: actions/checkout@v2
