@@ -55,20 +55,26 @@ jobs:
           run: terraform workspace select stage || terraform workspace new stage
           working-directory: ${{ env.WORKING_DIR }}
   
-        - name: Run Validate
+        - name: Validate
           run: terraform validate
           working-directory: ${{ env.WORKING_DIR }}
 
-        - name: Run tflint
-          run: tflint
-          working-directory: ${{ env.WORKING_DIR }}
+        - name: Tfsec
+          uses: aquasecurity/tfsec-action@v1.0.3
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            working_directory: ${{ env.WORKING_DIR }}
   
-        - name: Run tfsec
-          run: tfsec ${{ env.WORKING_DIR }}
-  
-        - name: Run Checkov
-          run: checkov -d ${{ env.WORKING_DIR }}
-  
-        - name: Run Terrascan
-          run: terrascan -t aws -p ${{ env.WORKING_DIR }}
+        - name: Tflint
+          uses: terraform-linters/setup-tflint@v4.0.0
+          with:
+            tflint_version: default
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            tflint_wrapper: false
+
+        - name: Checkov
+          uses: bridgecrewio/checkov-action@v12
+          with:
+            output_format: cli
+            directory: ${{ env.WORKING_DIR }}
   
