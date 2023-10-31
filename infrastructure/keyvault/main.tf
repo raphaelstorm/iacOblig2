@@ -51,11 +51,17 @@ resource "azurerm_key_vault" "keyvault" {
       "Get", "Set", "List", "Delete"
     ]
   }
+
+  network_acls {
+         bypass = "AzureServices"
+         default_action = "Deny"
+     }
 }
 
 resource "azurerm_key_vault_secret" "vm-password" {
   name         = format("%s-pswd-${random_string.string_gen.result}%s", var.prefix, var.suffix)
   value        = "gaffa.Teip2"
+  content_type = "password"
   key_vault_id = azurerm_key_vault.keyvault.id
 }
 
