@@ -11,17 +11,12 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  GIT_TOKEN: ${{ secrets.ACCESSTOKEN }}
   WORKING_DIR: ./infrastructure
 
 jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - name: Authorize github
-        run: git remote set-url origin "https://${GIT_TOKEN}@github.com/raphaelstorm/iacOblig2.git"
-        working-directory: ''
-        
       - name: Check out code
         uses: actions/checkout@v2
 
@@ -41,10 +36,14 @@ jobs:
           terraform fmt -recursive
           git diff --exit-code || git commit -am "Format Terraform code" || true
         working-directory: ${{ env.WORKING_DIR }}
+        env:
+          GIT_TOKEN: ${{ secrets.ACCESSTOKEN }}
 
       - name: push
         run: git push
         working-directory: ${{ env.WORKING_DIR }}
+        env:
+          GIT_TOKEN: ${{ secrets.ACCESSTOKEN }}
 
   deploy_dev:
     needs: format
