@@ -68,7 +68,7 @@ jobs:
   
         - name: Tflint
           continue-on-error: true
-          uses: terraform-linters/setup-tflint@v4.0.0
+          uses: terraform-linters/setup-tflint@v4
           with:
             tflint_version: default
             github_token: ${{ secrets.GITHUB_TOKEN }}
