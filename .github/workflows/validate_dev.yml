@@ -28,6 +28,7 @@ jobs:
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
 
+
       - name: Terraform workspace select or create dev
         run: terraform workspace select dev || terraform workspace new dev
         working-directory: ${{ env.WORKING_DIR }}
