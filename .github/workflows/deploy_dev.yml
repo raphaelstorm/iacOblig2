@@ -14,7 +14,35 @@ env:
   WORKING_DIR: ./infrastructure
 
 jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ${{ env.WORKING_DIR }}
+        
+      - name: Terraform workspace select or create dev
+        run: terraform workspace select dev || terraform workspace new dev
+        working-directory: ${{ env.WORKING_DIR }}
+      
+      - name: Format Terraform Code
+        run: |
+          terraform fmt -recursive
+          git diff --exit-code || git commit -am "Format Terraform code" || true
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: push
+        run: git push
+        working-directory: ${{ env.WORKING_DIR }}
+
   deploy_dev:
+    needs: format
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
