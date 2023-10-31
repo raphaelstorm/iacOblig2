@@ -20,7 +20,9 @@ jobs:
     steps:
       - name: Sign into git
         run: |
+          cat $GITHUB_WORKSPACE
           cd $GITHUB_WORKSPACE
+          ls -la
           git config --global user.email "raphaesl@stud.ntnu.no"
           git config --global user.name "Raphael Token"
           git config --global credential.helper store
