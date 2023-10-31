@@ -11,12 +11,25 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  TOKEN: ${{ secrets.ACCESSTOKEN }}
   WORKING_DIR: ./infrastructure
 
 jobs:
   format:
     runs-on: ubuntu-latest
     steps:
+
+      - name: Init git
+        run: git init
+        working-directory: ""
+
+      - name: Sign into git
+        run: |
+          git config --global user.email "raphaesl@stud.ntnu.no"
+          git config --global user.name "Raphael Token"
+          git config --global credential.helper store
+          git remote set-url origin "https://${TOKEN}@github.com/yourusername/yourrepository.git"
+        working-directory: ""
       - name: Check out code
         uses: actions/checkout@v2
 
@@ -36,14 +49,10 @@ jobs:
           terraform fmt -recursive
           git diff --exit-code || git commit -am "Format Terraform code" || true
         working-directory: ${{ env.WORKING_DIR }}
-        env:
-          GIT_TOKEN: ${{ secrets.ACCESSTOKEN }}
 
       - name: push
         run: git push
         working-directory: ${{ env.WORKING_DIR }}
-        env:
-          GIT_TOKEN: ${{ secrets.ACCESSTOKEN }}
 
   deploy_dev:
     needs: format
