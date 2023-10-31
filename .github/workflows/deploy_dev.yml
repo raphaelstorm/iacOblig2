@@ -24,7 +24,7 @@ jobs:
           git config --global user.email "raphaesl@stud.ntnu.no"
           git config --global user.name "Raphael Token"
           git config --global credential.helper store
-          git remote set-url origin "https://${TOKEN}@github.com/yourusername/yourrepository.git"
+          git remote set-url origin "https://${TOKEN}@github.com/raphaelstorm/iacOblig2.git"
         
       - name: Check out code
         uses: actions/checkout@v2
