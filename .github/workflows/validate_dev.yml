@@ -28,26 +28,27 @@ jobs:
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: Terraform workspace select or create stage
-        run: terraform workspace select stage || terraform workspace new stage
+
+      - name: Terraform workspace select or create dev
+        run: terraform workspace select dev || terraform workspace new dev
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: Validate
         run: terraform validate
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: Tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          working_directory: ${{ env.WORKING_DIR }}
-
-      - name: Tflint
+      - name: Setup tflint
         uses: terraform-linters/setup-tflint@v4.0.0
         with:
           tflint_version: default
           github_token: ${{ secrets.GITHUB_TOKEN }}
           tflint_wrapper: false
+
+      - name: Init TFLint
+        run: tflint --init
+
+      - name: Run TFLint
+        run: tflint -f compact
 
       - name: Checkov
         uses: bridgecrewio/checkov-action@v12
