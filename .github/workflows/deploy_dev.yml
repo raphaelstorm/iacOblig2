@@ -43,7 +43,6 @@ jobs:
           commit_prefix: "[AUTO]"
           commit_message: "Format Terraform code"
           force: false
-          target_branch: dev
 
   deploy_dev:
     needs: format
