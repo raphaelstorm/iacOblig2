@@ -14,9 +14,6 @@ env:
   WORKING_DIR: ./infrastructure
 
 jobs:
-  test_infrastructure:
-    runs-on: ubuntu-latest
-
   deploy_dev:
     runs-on: ubuntu-latest
     steps:
