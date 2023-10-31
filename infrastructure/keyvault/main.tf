@@ -51,11 +51,6 @@ resource "azurerm_key_vault" "keyvault" {
       "Get", "Set", "List", "Delete"
     ]
   }
-
-  network_acls {
-    bypass         = "AzureServices"
-    default_action = "Deny"
-  }
 }
 
 resource "azurerm_key_vault_secret" "vm-password" {
