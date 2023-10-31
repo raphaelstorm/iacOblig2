@@ -11,7 +11,6 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  GITHUB_TOKEN: ${{ secrets.ACCESSTOKEN }}
   WORKING_DIR: ./infrastructure
 
 jobs:
@@ -39,7 +38,7 @@ jobs:
       - name: Commit fmt changes
         uses: devops-infra/action-commit-push@master
         with:
-          github_token: "${{ env.GITHUB_TOKEN }}"
+          github_token: "${{ secrets.ACCESSTOKEN }}"
           add_timestamp: false
           commit_prefix: "[AUTO]"
           commit_message: "Format Terraform code"
@@ -66,3 +65,5 @@ jobs:
       - name: Terraform apply dev
         run: terraform apply -auto-approve
         working-directory: ${{ env.WORKING_DIR }}
+
+#
