@@ -31,7 +31,8 @@ resource "azurerm_key_vault" "keyvault" {
   enabled_for_disk_encryption = true
   tenant_id                   = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days  = 7
-  purge_protection_enabled    = false
+  purge_protection_enabled    = true
+  public_network_access_enabled = false
 
   sku_name = "standard"
 
@@ -51,6 +52,11 @@ resource "azurerm_key_vault" "keyvault" {
       "Get", "Set", "List", "Delete"
     ]
   }
+
+  network_acls {
+    default_action = "Deny"
+    bypass = "AzureServices"
+  }
 }
 
 resource "azurerm_key_vault_secret" "vm-password" {
@@ -58,6 +64,7 @@ resource "azurerm_key_vault_secret" "vm-password" {
   value        = "gaffa.Teip2"
   content_type = "password"
   key_vault_id = azurerm_key_vault.keyvault.id
+  expiration_date = "2024-12-30T20:00:00Z"
 }
 
 resource "azurerm_key_vault_secret" "sa-accesskey" {
@@ -65,4 +72,6 @@ resource "azurerm_key_vault_secret" "sa-accesskey" {
   name         = format("%s-saak%s-${random_string.string_gen.result}%s", var.prefix, count.index, var.suffix)
   value        = var.sa_info[count.index].access_key
   key_vault_id = azurerm_key_vault.keyvault.id
+  expiration_date = "2024-12-30T20:00:00Z"
+  content_type = "text/plain"
 }
