@@ -74,3 +74,4 @@ resource "azurerm_key_vault_secret" "sa-accesskey" {
   key_vault_id = azurerm_key_vault.keyvault.id
   expiration_date = "2024-12-30T20:00:00Z"
   content_type = "text/plain"
+}
