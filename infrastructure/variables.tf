@@ -1,24 +1,24 @@
 variable "initials" {
   description = "String containing my initials that comes before every resource."
-  type = string
+  type        = string
   default     = "rsl"
 }
 
 variable "companyname" {
   description = "Name of the company. Used for making prefixes."
-  type = string
+  type        = string
   default     = "OpenTerra AS"
 }
 
 variable "shortcompanyname" {
   description = "A shorter version of the company name, for use in name prefix."
-  type = string
+  type        = string
   default     = "op"
 }
 
 variable "defaultlocation" {
   description = "Default location of cloud services."
-  type = string
+  type        = string
   default     = "North Europe"
 }
 
