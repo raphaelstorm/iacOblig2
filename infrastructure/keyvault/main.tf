@@ -66,3 +66,5 @@ resource "azurerm_key_vault_secret" "sa-accesskey" {
   value        = var.sa_info[count.index].access_key
   key_vault_id = azurerm_key_vault.keyvault.id
 }
+
+##dajhwbdawjhkdbn
