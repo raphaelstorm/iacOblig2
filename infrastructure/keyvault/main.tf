@@ -59,7 +59,7 @@ resource "azurerm_key_vault" "keyvault" {
 }
 
 resource "azurerm_key_vault_secret" "vm-password" {
-  depends_on = [ azurerm_key_vault.keyvault ]
+  depends_on      = [azurerm_key_vault.keyvault]
   name            = format("%s-pswd-${random_string.string_gen.result}%s", var.prefix, var.suffix)
   value           = "gaffa.Teip2"
   content_type    = "password"
@@ -68,7 +68,7 @@ resource "azurerm_key_vault_secret" "vm-password" {
 }
 
 resource "azurerm_key_vault_secret" "sa-accesskey" {
-  depends_on = [ azurerm_key_vault.keyvault ]
+  depends_on      = [azurerm_key_vault.keyvault]
   count           = length(var.sa_info)
   name            = format("%s-saak%s-${random_string.string_gen.result}%s", var.prefix, count.index, var.suffix)
   value           = var.sa_info[count.index].access_key
