@@ -1,11 +1,11 @@
 resource "azurerm_network_security_group" "nsg" {
-  name                = var.nsg_name
+  name                = "${local.prefix}-${var.nsg_name}-${local.suffix}"
   location            = azurerm_resource_group.rg-infra.location
   resource_group_name = azurerm_resource_group.rg-infra.name
 }
 
 resource "azurerm_virtual_network" "vnet" {
-  name                = var.vnet_name
+  name                = "${local.prefix}-${var.vnet_name}-${local.suffix}"
   location            = azurerm_resource_group.rg-infra.location
   resource_group_name = azurerm_resource_group.rg-infra.name
   address_space       = ["10.0.0.0/16"]
@@ -13,7 +13,7 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_subnet" "subnet" {
-  name                 = var.subnet_name
+  name                 = "${local.prefix}-${var.subnet_name}-${local.suffix}"
   resource_group_name  = azurerm_resource_group.rg-infra.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.0.0/24"]
