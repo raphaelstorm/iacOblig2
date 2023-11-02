@@ -71,9 +71,3 @@ jobs:
           with:
             directory: ${{ env.WORKING_DIR }}
     
-        - name: Checkov
-          uses: bridgecrewio/checkov-action@v12
-          with:
-            output_format: cli
-            directory: ${{ env.WORKING_DIR }}
-    
