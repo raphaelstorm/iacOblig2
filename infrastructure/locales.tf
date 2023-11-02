@@ -1,4 +1,4 @@
-locals{
-    suffix = terraform.workspace
-    prefix = "rsl"
+locals {
+  suffix = terraform.workspace
+  prefix = "rsl"
 }
