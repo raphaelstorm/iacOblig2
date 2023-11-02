@@ -1,7 +1,6 @@
 # iacOblig2
 
-
-Terraform Mandatory Assignment: CI/CD and testing
+## Task: Terraform Mandatory Assignment: CI/CD and testing
  
 The goal of this assignment is to create a good CI/CD workflow with for our Terraform IaC with Github Actions.
  
@@ -32,3 +31,16 @@ IMPORTANT! A .zip-file with the following name, files and folders: Name the zip 
 
 **Evaluation Criteria:** Code quality, functionality, documentation, reusability. <br>
 **Deadline:** 05. November 2023 - 23:59
+
+
+## Use Guide
+
+
+### Branches
+
+
+This repository strucutre mainly uses two branches, *dev* and *main*. The intention is that work on specific tasks is conducted within enviorment branches, wich is 
+```
+
+
+```
