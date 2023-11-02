@@ -1,3 +1,5 @@
+/*
+
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "kv" {
@@ -46,3 +48,6 @@ resource "azurerm_key_vault_secret" "vm_password" {
     random_password.password
   ]
 }
+
+
+*/
