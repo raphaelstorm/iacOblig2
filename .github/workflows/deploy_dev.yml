@@ -65,5 +65,3 @@ jobs:
       - name: Terraform apply dev
         run: terraform apply -auto-approve
         working-directory: ${{ env.WORKING_DIR }}
-
-#
