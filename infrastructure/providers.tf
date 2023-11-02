@@ -15,7 +15,7 @@ terraform {
     resource_group_name  = "rsl-backend-rg"
     storage_account_name = "rslbackendsa"
     container_name       = "rsl-backend-sc"
-    key                  = "oblig2.terraform.tfstate"
+    key                  = "oblig.terraform.tfstate"
   }
 }
 
