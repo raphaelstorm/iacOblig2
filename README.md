@@ -39,8 +39,42 @@ IMPORTANT! A .zip-file with the following name, files and folders: Name the zip 
 ### Branches
 
 
-This repository strucutre mainly uses two branches, *dev* and *main*. The intention is that work on specific tasks is conducted within enviorment branches, wich is 
+This repository strucutre mainly uses two branches, *dev* and *main*. The intention is that work on specific tasks is conducted within enviorment branches, wich are then merged into the dev branch via pull request. Code quality checks are performed upon creating a pull request with the dev branch. After the checks have passed and the branches have merged, *dev* will automaticly clean up any ugly code, and the new version is deployed to azure under the *dev* suffix. 
+
+Once a new version is ready for release, a pull request is created towards the *main* branch from the *dev* branch. First, a new version of the infrastructure is tested under the *stage* suffix. Tests are then conducted on the live code in this enviorment. If all checks pass, and at least one person have personally approved of the merge, then the dev branch may be merged with the main branch. The main branch automaticly deploys, and the new version is live.
+```
+Env branch              Dev branch                      Main branch
+    :                      /|                               |
+    :_______new branch____/ |                               |
+    |                       |                               |
+    |                       |                               |
+    |\ Pull request         |                               |
+    | \                     |                               |
+    |  x testing failed     |                               |
+    | <-fix code            |                               |
+    |\                      |                               |
+    | \                     |                               |   
+    |  v testing success    |                               |
+    |   \_________merge_____|                               |
+    x branch killed         | <-Deploy dev                  |
+                            |                               |
+                            |\ Pull request                 |
+                            | \ Deploy staging enviorment   |
+                            |  \ Test staging enviorment    |
+                            |   x Test failed               |
+                            |                               |
+                            | <-fix code                    |
+                            |                               |
+                            |\ Pull request                 |
+                            | \ Deploy staging enviorment   |
+                            |  \ Test staging enviorment    |
+                            |   v Test success              |
+                            |    \                          |
+                            |     \ Manually approved       |
+                            |      \_________merge__________|
+                            |                               | <- Deploy prod
 ```
 
 
-```
+
+### Screenshots
