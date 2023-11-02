@@ -17,21 +17,6 @@ variable "location" {
   description = "Azure region to deploy resources"
 }
 
-##########################################
-###### Variable for the keyvault.tf ######
-##########################################
-variable "kv_name" {
-  type        = string
-  default     = "kv"
-  description = "Name of the keyvault to create"
-}
-
-variable "sa_accesskey_name" {
-  type        = string
-  default     = "sa-accesskey"
-  description = "Name of the keyvault secret for the storage account access key"
-}
-
 ################################################
 ###### Variable for the storageaccount.tf ######
 ################################################
