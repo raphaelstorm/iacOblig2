@@ -77,4 +77,11 @@ Env branch              Dev branch                      Main branch
 
 
 
-### Screenshots
+### Step through with screenshots
+
+
+1) Create a new branch, and edit your code.
+
+<img src="./screenshots/1.PNG">
+
+2) Commit and push your changes to github. 
