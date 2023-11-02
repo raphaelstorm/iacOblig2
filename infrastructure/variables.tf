@@ -1,71 +1,97 @@
-variable "initials" {
-  description = "String containing my initials that comes before every resource."
-  default     = "rsl"
+###### General variables ######
+variable "base_name" {
+  type        = string
+  default     = "demo"
+  description = "value of the base name"
 }
 
-variable "companyname" {
-  description = "Name of the company. Used for making prefixes."
-  default     = "OpenTerra AS"
+variable "rg_name" {
+  type        = string
+  default     = "rg"
+  description = "Name of the resource group to create"
 }
 
-variable "shortcompanyname" {
-  description = "A shorter version of the company name, for use in name prefix."
-  default     = "ot"
+variable "location" {
+  type        = string
+  default     = "westeurope"
+  description = "Azure region to deploy resources"
 }
 
-variable "defaultlocation" {
-  description = "Default location of cloud services."
-  default     = "North Europe"
+##########################################
+###### Variable for the keyvault.tf ######
+##########################################
+variable "kv_name" {
+  type        = string
+  default     = "kv"
+  description = "Name of the keyvault to create"
 }
 
-variable "billing_accounts" {
-  type        = map(string)
-  description = "A map containing all billing accounts."
-  default = {
-    network         = "aaaaaaaaaaaa"
-    virtualmachines = "bbbbbbbbbbbb"
-    storageaccounts = "cccccccccccc"
-  }
+variable "sa_accesskey_name" {
+  type        = string
+  default     = "sa-accesskey"
+  description = "Name of the keyvault secret for the storage account access key"
 }
 
-variable "ip_whitelist" {
-  type        = list(string)
-  description = "List of all public IP's that is allowed to remotely connect to the network."
-  default     = ["88.95.189.158", "89.10.239.169"]
+################################################
+###### Variable for the storageaccount.tf ######
+################################################
+
+variable "sa_name" {
+  type        = string
+  default     = "sa"
+  description = "value of the storage account name"
 }
 
-variable "vmList" {
-  type        = list(map(any))
-  description = "A list of maps, where each map is a VM. Keys are size(string), public(bool), username(string), count(number)"
-  default = [
-    {
-      size         = "Standard_DS2_v2"
-      public       = true
-      username     = "manager"
-      computername = "manager"
-      count        = 1
-    },
-    {
-      count = 2
-    },
-  ]
+variable "sc_name" {
+  type        = string
+  default     = "sc"
+  description = "value of the storage container name"
+}
+#################################################
+###### Variables for the virtualnetwork.tf ######
+#################################################
+
+variable "vnet_name" {
+  type        = string
+  default     = "vnet"
+  description = "Name of the virtual network to create"
 }
 
-variable "default_vm" {
-  type        = map(any)
-  description = "A map containing the default data for all vm's. VM parameters that are not provided will use these values."
-  default = {
-    size         = "Standard_D1_v2"
-    username     = "openterra"
-    computername = "computer"
-    public       = false
-  }
+variable "nsg_name" {
+  type        = string
+  default     = "nsg"
+  description = "Name of the network security group to create"
 }
 
-variable "saMap" {
-  type        = map(number)
-  description = "A map, where each element's key is a storage account kind. The elements value is the amount of such storage accounts that is to be created."
-  default = {
-    BlobStorage = 2
-  }
+variable "subnet_name" {
+  type        = string
+  default     = "subnet"
+  description = "Name of the subnet to create"
+}
+#################################################
+###### Variables for the virtualmachine.tf ######
+#################################################
+
+variable "vm_nic_name" {
+  type        = string
+  default     = "vm-nic"
+  description = "Name of the network interface to create"
+}
+
+variable "vm_name" {
+  type        = string
+  default     = "vm"
+  description = "Name of the virtual machine to create"
+}
+
+variable "pip_name" {
+  type        = string
+  default     = "pip"
+  description = "Name of the public IP address to create"
+}
+
+variable "vm_username" {
+  type        = string
+  default     = "demoadmin"
+  description = "Username for the virtual machine"
 }

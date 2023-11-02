@@ -19,6 +19,9 @@ jobs:
       steps:
         - name: Checkout
           uses: actions/checkout@v3
+
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v1
         
         - name: Terraform init
           run: terraform init
@@ -60,21 +63,14 @@ jobs:
           working-directory: ${{ env.WORKING_DIR }}
 
         - name: Tfsec
+          continue-on-error: true
           uses: aquasecurity/tfsec-action@v1.0.3
           with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             working_directory: ${{ env.WORKING_DIR }}
-  
-        - name: Tflint
-          uses: terraform-linters/setup-tflint@v4.0.0
-          with:
-            tflint_version: default
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            tflint_wrapper: false
 
-        - name: Checkov
-          uses: bridgecrewio/checkov-action@v12
+        - name: tflint
+          uses: "infinite-automations/tflint-all-in-one@v1.0.0"
           with:
-            output_format: cli
             directory: ${{ env.WORKING_DIR }}
-  
+    

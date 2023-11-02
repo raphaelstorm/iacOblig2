@@ -16,7 +16,7 @@ env:
 jobs:
   format:
     runs-on: ubuntu-latest
-    steps:
+    steps:       
       - name: Check out code
         uses: actions/checkout@v2
 
@@ -32,14 +32,17 @@ jobs:
         working-directory: ${{ env.WORKING_DIR }}
       
       - name: Format Terraform Code
-        run: |
-          terraform fmt -recursive
-          git diff --exit-code || git commit -am "Format Terraform code" || true
+        run: terraform fmt -recursive
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: push
-        run: git push
-        working-directory: ${{ env.WORKING_DIR }}
+      - name: Commit fmt changes
+        uses: devops-infra/action-commit-push@master
+        with:
+          github_token: "${{ secrets.ACCESSTOKEN }}"
+          add_timestamp: false
+          commit_prefix: "[AUTO]"
+          commit_message: "Format Terraform code"
+          force: false
 
   deploy_dev:
     needs: format
