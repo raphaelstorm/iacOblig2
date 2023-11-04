@@ -1,4 +1,63 @@
 # iacOblig2
+*Raphael Storm Larsen* | *raphaesl@stud.ntnu.no* | *04/11/2023* <br>
+
+Repository: https://github.com/raphaelstorm/iacOblig2
+
+## Usage Guide
+
+### Script Usage Guide
+
+This Terraform configuration demo is a slightly modified version of the lab 7 demo. It creates a virtual network containing one virtual machine. The VM includes a disk and NIC with a public IP attached. Additionally, a storage account is created to hold the container. Most resources have names that can be edited within the `variables.tf` script. Keep in mind that the Terraform configuration still uses its own prefix and suffix for most resources.
+
+### Branches
+
+This repository structure primarily uses two branches: `dev` and `main`. The intention is to conduct work on specific tasks within environment branches, which are then merged into the `dev` branch via pull requests. Code quality checks are performed upon creating a pull request with the `dev` branch. After the checks have passed and the branches have merged, `dev` will automatically clean up any code issues, and the new version is deployed to Azure under the `dev` suffix.
+
+Once a new version is ready for release, a pull request is created towards the `main` branch from the `dev` branch. First, a new version of the infrastructure is tested under the `stage` suffix. Tests are then conducted on the live code in this environment. If all checks pass, and at least one person has personally approved the merge, then the `dev` branch may be merged with the `main` branch. The `main` branch automatically deploys, and the new version is live.
+
+### Workflow Overview
+
+1. Create a new environment branch, in this case i have called mine `Documentation`.
+
+![Screenshot 1](./screenshots/1.PNG)
+
+2. Commit and push your changes to GitHub as you wish. When you're finished editing, create a new pull request towards the `dev` branch. Checks immediately start running.
+
+![Screenshot 2](./screenshots/2.PNG)
+
+![Screenshot 3](./screenshots/3.PNG)
+
+3. With the checks passed, merge your new branch with the existing `dev` branch, and then delete the environment branch. The dev infrastructure is immediately deployed upon pushing.
+
+![Screenshot 4](./screenshots/4.PNG)
+
+![Screenshot 5](./screenshots/5.PNG)
+
+4. Now that your environment branch has been pushed to the `dev` branch, and all tests have passed, it's time to create a pull request towards the `main` branch.
+
+![Screenshot 6](./screenshots/6.PNG)
+
+5. Tests start automatically as soon as the pull request is created. The tests are conducted on the `staging` environment, which is also deployed when the pull request towards `main` is created.
+
+![Screenshot 7](./screenshots/7.PNG)
+
+![Screenshot 8](./screenshots/8.PNG)
+
+6. The staging environment was successfully launched in Azure.
+
+![Screenshot 12](./screenshots/12.PNG)
+
+7. After all checks have passed, and manual approval has been given, the branches are merged. A production deployment workflow immediately starts. This workflow also destroys the staging environment to save on resources.
+
+![Screenshot 11](./screenshots/11.PNG)
+
+8. All resources were deployed successfully to Azure. The staging environment was deleted, but you can see in the previous screenshot that it launched correctly.
+
+![Screenshot 9](./screenshots/9.PNG)
+
+![Screenshot 10](./screenshots/10.PNG)
+
+
 
 ## Task: Terraform Mandatory Assignment: CI/CD and testing
  
@@ -31,57 +90,3 @@ IMPORTANT! A .zip-file with the following name, files and folders: Name the zip 
 
 **Evaluation Criteria:** Code quality, functionality, documentation, reusability. <br>
 **Deadline:** 05. November 2023 - 23:59
-
-
-## Use Guide
-
-
-### Branches
-
-
-This repository strucutre mainly uses two branches, *dev* and *main*. The intention is that work on specific tasks is conducted within enviorment branches, wich are then merged into the dev branch via pull request. Code quality checks are performed upon creating a pull request with the dev branch. After the checks have passed and the branches have merged, *dev* will automaticly clean up any ugly code, and the new version is deployed to azure under the *dev* suffix. 
-
-Once a new version is ready for release, a pull request is created towards the *main* branch from the *dev* branch. First, a new version of the infrastructure is tested under the *stage* suffix. Tests are then conducted on the live code in this enviorment. If all checks pass, and at least one person have personally approved of the merge, then the dev branch may be merged with the main branch. The main branch automaticly deploys, and the new version is live.
-```
-Env branch              Dev branch                      Main branch
-    :                      /|                               |
-    :_______new branch____/ |                               |
-    |                       |                               |
-    |                       |                               |
-    |\ Pull request         |                               |
-    | \                     |                               |
-    |  x testing failed     |                               |
-    | <-fix code            |                               |
-    |\                      |                               |
-    | \                     |                               |   
-    |  v testing success    |                               |
-    |   \_________merge_____|                               |
-    x branch killed         | <-Deploy dev                  |
-                            |                               |
-                            |\ Pull request                 |
-                            | \ Deploy staging enviorment   |
-                            |  \ Test staging enviorment    |
-                            |   x Test failed               |
-                            |                               |
-                            | <-fix code                    |
-                            |                               |
-                            |\ Pull request                 |
-                            | \ Deploy staging enviorment   |
-                            |  \ Test staging enviorment    |
-                            |   v Test success              |
-                            |    \                          |
-                            |     \ Manually approved       |
-                            |      \_________merge__________|
-                            |                               | <- Deploy prod
-```
-
-
-
-### Step through with screenshots
-
-
-1) Create a new branch, and edit your code.
-
-<img src="./screenshots/1.PNG">
-
-2) Commit and push your changes to github. 
