@@ -1,41 +1,45 @@
 name: Deploy dev
 
+# Specify when the workflow should be triggered
 on:
   push:
     branches: 
-        - 'dev'
-  workflow_dispatch:
+        - 'dev'  # Triggered on pushes to the 'dev' branch
+  workflow_dispatch:  # Triggered manually through GitHub Actions UI
 
+# Define environment variables used in the workflow
 env:
   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  WORKING_DIR: ./infrastructure
+  WORKING_DIR: ./infrastructure  # Working directory for the Terraform code
 
+# Define the jobs to be executed in the workflow
 jobs:
   format:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Specifies the runner OS
+
     steps:       
-      - name: Check out code
+      - name: Check out code  # Checkout the repository
         uses: actions/checkout@v2
 
-      - name: Setup Terraform
+      - name: Setup Terraform  # Set up Terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Initialize Terraform
+      - name: Initialize Terraform  # Initialize Terraform in the specified working directory
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
         
-      - name: Terraform workspace select or create dev
+      - name: Terraform workspace select or create dev  # Select or create a Terraform workspace named 'dev'
         run: terraform workspace select dev || terraform workspace new dev
         working-directory: ${{ env.WORKING_DIR }}
       
-      - name: Format Terraform Code
+      - name: Format Terraform Code  # Format Terraform code using 'terraform fmt'
         run: terraform fmt -recursive
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: Commit fmt changes
+      - name: Commit fmt changes  # Commit and push the formatting changes to the repository
         uses: devops-infra/action-commit-push@master
         with:
           github_token: "${{ secrets.ACCESSTOKEN }}"
@@ -45,23 +49,24 @@ jobs:
           force: false
 
   deploy_dev:
-    needs: format
+    needs: format  # This job depends on the 'format' job and will run after it
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out code
+      - name: Check out code  # Checkout the repository
         uses: actions/checkout@v2
 
-      - name: Setup Terraform
+      - name: Setup Terraform  # Set up Terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Initialize Terraform
+      - name: Initialize Terraform  # Initialize Terraform in the specified working directory
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
         
-      - name: Terraform workspace select or create dev
+      - name: Terraform workspace select or create dev  # Select or create a Terraform workspace named 'dev'
         run: terraform workspace select dev || terraform workspace new dev
         working-directory: ${{ env.WORKING_DIR }}
       
-      - name: Terraform apply dev
+      - name: Terraform apply dev  # Apply Terraform changes for the 'dev' environment
         run: terraform apply -auto-approve
         working-directory: ${{ env.WORKING_DIR }}
