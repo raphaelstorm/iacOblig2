@@ -1,43 +1,46 @@
+# Define the name of the workflow - Validate dev
 name: Validate dev
 
+# Specify when the workflow should be triggered
 on:
-  pull_request:
+  pull_request:  # Triggered on pull requests to the 'dev' branch
     branches: 
       - 'dev'
-  workflow_dispatch:
+  workflow_dispatch:  # Triggered manually through GitHub Actions UI
 
+# Define environment variables used in the workflow
 env:
   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  WORKING_DIR: ./infrastructure
+  WORKING_DIR: ./infrastructure  # Working directory for the Terraform code
 
+# Define the job for testing the infrastructure
 jobs:
   test_infrastructure:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
+      - name: Check out code  # Checkout the repository
         uses: actions/checkout@v2
 
-      - name: Setup Terraform
+      - name: Setup Terraform  # Set up Terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Initialize Terraform
+      - name: Initialize Terraform  # Initialize Terraform in the specified working directory
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: Terraform workspace select or create dev
+      - name: Terraform workspace select or create dev  # Select or create a Terraform workspace named 'dev'
         run: terraform workspace select dev || terraform workspace new dev
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: Validate
+      - name: Validate  # Validate the Terraform configuration
         run: terraform validate
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: tflint
+      - name: tflint  # Run linting checks using tflint
         uses: "infinite-automations/tflint-all-in-one@v1.0.0"
         with:
           directory: ${{ env.WORKING_DIR }}
-

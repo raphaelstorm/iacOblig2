@@ -1,62 +1,68 @@
 name: Deploy production environment
 
+# Specify when the workflow should be triggered
 on:
   push:
     branches: 
-        - 'main'
-  workflow_dispatch:
+        - 'main'  # Triggered on pushes to the 'main' branch
+  workflow_dispatch:  # Triggered manually through GitHub Actions UI
 
+# Define environment variables used in the workflow
 env:
   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  WORKING_DIR: ./infrastructure
+  WORKING_DIR: ./infrastructure  # Working directory for the Terraform code
 
+# Define the job for deploying the production environment
 jobs:
   deploy_prod:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout  # Checkout the repository
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
+      - name: Setup Terraform  # Set up Terraform
         uses: hashicorp/setup-terraform@v1
       
-      - name: Terraform init
+      - name: Terraform init  # Initialize Terraform in the specified working directory
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
         
-      - name: Terraform workspace select or create prod
+      - name: Terraform workspace select or create prod  # Select or create a Terraform workspace named 'prod'
         run: terraform workspace select prod || terraform workspace new prod
         working-directory: ${{ env.WORKING_DIR }}
       
-      - name: Terraform apply prod
+      - name: Terraform apply prod  # Apply Terraform changes for the 'prod' environment
         run: terraform apply -auto-approve
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: Get Web Endpoint
+      - name: Get Web Endpoint  # Retrieve the primary web endpoint
         id: get_web_endpoint
         run: echo "WEB_ENDPOINT=$(terraform output -raw primary_web_endpoint)" 
         working-directory: ${{ env.WORKING_DIR }}
 
+# Define the job for destroying the staging environment
   destroy_stage:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout  # Checkout the repository
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
+      - name: Setup Terraform  # Set up Terraform
         uses: hashicorp/setup-terraform@v1
       
-      - name: Terraform init
+      - name: Terraform init  # Initialize Terraform in the specified working directory
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: Terraform workspace select or create stage
+      - name: Terraform workspace select or create stage  # Select or create a Terraform workspace named 'stage'
         run: terraform workspace select stage || terraform workspace new stage
         working-directory: ${{ env.WORKING_DIR }}
         
-      - name: Destroy
+      - name: Destroy  # Destroy the staging environment using 'terraform destroy'
         run: terraform destroy -auto-approve
         working-directory: ${{ env.WORKING_DIR }}

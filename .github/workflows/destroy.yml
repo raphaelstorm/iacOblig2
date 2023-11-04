@@ -1,75 +1,83 @@
 name: destroy
 
+# Specify when the workflow should be triggered
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Triggered manually through GitHub Actions UI
 
+# Define environment variables used in the workflow
 env:
   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  WORKING_DIR: ./infrastructure
+  WORKING_DIR: ./infrastructure  # Working directory for the Terraform code
 
+# Define the job for destroying the 'dev' environment
 jobs:
   destroy_dev:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout  # Checkout the repository
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
+      - name: Setup Terraform  # Set up Terraform
         uses: hashicorp/setup-terraform@v1
       
-      - name: Init
+      - name: Init  # Initialize Terraform in the specified working directory
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
     
-      - name: Terraform workspace select or create dev
+      - name: Terraform workspace select or create dev  # Select or create a Terraform workspace named 'dev'
         run: terraform workspace select dev || terraform workspace new dev
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: Destroy
+      - name: Destroy  # Destroy the 'dev' environment using 'terraform destroy'
         run: terraform destroy -auto-approve
         working-directory: ${{ env.WORKING_DIR }}
 
+# Define the job for destroying the 'stage' environment
   destroy_stage:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout  # Checkout the repository
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
+      - name: Setup Terraform  # Set up Terraform
         uses: hashicorp/setup-terraform@v1
       
-      - name: Init
+      - name: Init  # Initialize Terraform in the specified working directory
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
     
-      - name: Terraform workspace select or create stage
+      - name: Terraform workspace select or create stage  # Select or create a Terraform workspace named 'stage'
         run: terraform workspace select stage || terraform workspace new stage
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: Destroy
+      - name: Destroy  # Destroy the 'stage' environment using 'terraform destroy'
         run: terraform destroy -auto-approve
         working-directory: ${{ env.WORKING_DIR }}
-  
+
+# Define the job for destroying the 'prod' environment
   destroy_prod:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout  # Checkout the repository
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
+      - name: Setup Terraform  # Set up Terraform
         uses: hashicorp/setup-terraform@v1
       
-      - name: Init
+      - name: Init  # Initialize Terraform in the specified working directory
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
     
-      - name: Terraform workspace select or create prod
+      - name: Terraform workspace select or create prod  # Select or create a Terraform workspace named 'prod'
         run: terraform workspace select prod || terraform workspace new prod
         working-directory: ${{ env.WORKING_DIR }}
 
-      - name: Destroy
+      - name: Destroy  # Destroy the 'prod' environment using 'terraform destroy'
         run: terraform destroy -auto-approve
         working-directory: ${{ env.WORKING_DIR }}
